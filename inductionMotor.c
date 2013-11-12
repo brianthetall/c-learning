@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#define RESOLUTION 10
 
 struct parameters{
   int frequency;
@@ -22,6 +23,7 @@ struct motor{
   double lengthCoil;
   double resistance;
   double u;//magnetic permeability of material
+  double airgap;
   //add function pointer to motorString()?
   struct parameters *p;
 };
@@ -31,7 +33,7 @@ char* motorString(struct motor *m){
   if(m==NULL)
     return NULL;
 
-  sprintf(retval,"Phases: %d\r\nPoles: %d\r\nTurns: %d\r\nCoil Surface Area: %lf\r\nCoil Length: %lf\r\nCoil Resistance: %lf\r\nCore Magnetic Permeability: %lf\r\n",(*m).phases,(*m).poles,(*m).turns,(*m).surfaceAreaCoil,(*m).lengthCoil,(*m).resistance,(*m).u);
+  sprintf(retval,"Phases: %d\r\nPoles: %d\r\nTurns: %d\r\nCoil Surface Area: %lf\r\nCoil Length: %lf\r\nCoil Resistance: %lf\r\nCore Magnetic Permeability: %lf\r\nAirGap: %lf\r\n",(*m).phases,(*m).poles,(*m).turns,(*m).surfaceAreaCoil,(*m).lengthCoil,(*m).resistance,(*m).u,m->airgap);
 
   if(m->p!=NULL){
     char *parameterString=(char*)malloc(sizeof(char)*64*sizeof((*m).p));
@@ -43,12 +45,40 @@ char* motorString(struct motor *m){
   return retval;
 }
 
+double statorFlux(struct motor *m){
+  if(m==NULL)
+    return -1;
+  double flux=pow(m->turns,2);
+  flux*=m->u;
+  flux*=m->surfaceAreaCoil;
+  flux*=(m->p->current);
+  flux/=m->lengthCoil;
+  return flux;
+}
+
 /**
  *   Calculate the flux/current
  */
-double inductance(struct motor *m){}
+double inductance(struct motor *m){
+  double flux=statorFlux(m);
+  return flux/(m->p->current);
+}
 
-double powerDeliveredToRotor(struct motor *m, double airGap){}
+/**
+ * Generate Power & Torque curves
+ */
+double** power(struct motor *m){
+  int P=0,T=1;
+  double pi=3.14;//look up the math.h way...
+  double **curves=(double**)malloc(sizeof(double*)*2);
+  curves[P]=(double*)malloc(sizeof(double)*RESOLUTION);//power
+  curves[T]=(double*)malloc(sizeof(double)*RESOLUTION);//torque
+  //start with 100% slip
+  curves[P][0]=m->phases*pow(m->p->current,2)*m->resistance;
+  curves[T][0]=curves[P][0]*m->poles/(pi*4*m->p->frequency);
+
+  return curves;
+}
 
 
 int main(int argc,char *argv[]){
@@ -58,7 +88,7 @@ int main(int argc,char *argv[]){
   (*m.p).current = 69.420;
   m.p->frequency=120;
   
-  if(argc==8){
+  if(argc==9){
     m.phases = atoi(argv[1]);
     m.poles = atoi(argv[2]);
     m.turns = atoi(argv[3]);
@@ -66,7 +96,16 @@ int main(int argc,char *argv[]){
     m.lengthCoil = atof(argv[5]);
     m.resistance = atof(argv[6]);
     m.u = atof(argv[7]);
+    m.airgap=atof(argv[8]);
+
+    printf("%s\r\n",motorString(&m));
+    double **pt=power(&m);
+    for(int i=0;i<RESOLUTION;i++)
+      printf("power=%lf\ttorque=%lf\r\n",pt[0][i],pt[1][i]);
+
   }else{
+    printf("inductionMotor phases poles turns surfaceArea Length resistance u airgap\r\n");
+    /*
     printf("Phases: ");
     scanf("%d",&m.phases);
     printf("Poles: ");
@@ -81,9 +120,10 @@ int main(int argc,char *argv[]){
     scanf("%lf",&m.resistance);
     printf("Permeability: ");
     scanf("%lf",&m.u);
+    printf("AirGap: ");
+    scanf("%lf",&m.airgap);
+    */
   }
-  
-  printf("%s\r\n",motorString(&m));
 
   return 0;
 }
