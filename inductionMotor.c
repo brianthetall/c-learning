@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 struct parameters{
   int frequency;
@@ -16,27 +17,31 @@ struct motor{
   double lengthCoil;
   double resistance;
   double u;//magnetic permeability of material
-  //add function pointer to toString()
+  //add function pointer to motorString()?
 };
 
-char* motorString(char *string, struct motor *m){
-  //  char *retval=(char*)malloc(sizeof(char;
+char* motorString(struct motor *m){
+  char *retval=(char*)malloc(sizeof(char)*256*sizeof(*m));
   if(m==NULL)
     return NULL;
 
-  sprintf(string,"Phases: %d\r\n",(*m).phases);
-  //  sprintf(string
-  printf("Sizeof(*m)=%d\r\nSizeof(m)=%d\r\n",sizeof(*m),sizeof(m));
+  sprintf(retval,"Phases: %d\r\nPoles: %d\r\nTurns: %d\r\nCoil Surface Area: %lf\r\nCoil Length: %lf\r\nCoil Resistance: %lf\r\nCore Magnetic Permeability: %lf\r\n",(*m).phases,(*m).poles,(*m).turns,(*m).surfaceAreaCoil,(*m).lengthCoil,(*m).resistance,(*m).u);
 
-  return string;
+  return retval;
 }
 
 int main(int argc,char *argv[]){
 
   struct motor m;
   
-  if(argc==7){
+  if(argc==8){
     m.phases = atoi(argv[1]);
+    m.poles = atoi(argv[2]);
+    m.turns = atoi(argv[3]);
+    m.surfaceAreaCoil = atof(argv[4]);
+    m.lengthCoil = atof(argv[5]);
+    m.resistance = atof(argv[6]);
+    m.u = atof(argv[7]);
   }else{
     printf("Phases: ");
     scanf("%d",&m.phases);
@@ -54,11 +59,7 @@ int main(int argc,char *argv[]){
     scanf("%lf",&m.u);
   }
   
-  printf("Phases: %d\r\n",m.phases);
+  printf("%s\r\n",motorString(&m));
 
-  char *string=(char*)malloc(256*sizeof(char));
-  motorString(string,&m);
-  printf("%s\r\n",string);
-  
   return 0;
 }
