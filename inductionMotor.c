@@ -1,3 +1,8 @@
+/**
+ * Induction Motor Modeling
+ * To be used for sweeping parameter values and finding optimal
+ * design patterns
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -5,8 +10,7 @@
 
 struct parameters{
   int frequency;
-  int current;
-
+  double current;
 };
 
 struct motor{
@@ -18,6 +22,7 @@ struct motor{
   double resistance;
   double u;//magnetic permeability of material
   //add function pointer to motorString()?
+  struct parameters *p;
 };
 
 char* motorString(struct motor *m){
@@ -27,12 +32,30 @@ char* motorString(struct motor *m){
 
   sprintf(retval,"Phases: %d\r\nPoles: %d\r\nTurns: %d\r\nCoil Surface Area: %lf\r\nCoil Length: %lf\r\nCoil Resistance: %lf\r\nCore Magnetic Permeability: %lf\r\n",(*m).phases,(*m).poles,(*m).turns,(*m).surfaceAreaCoil,(*m).lengthCoil,(*m).resistance,(*m).u);
 
+  if(m->p!=NULL){
+    char *parameterString=(char*)malloc(sizeof(char)*64*sizeof((*m).p));
+    sprintf(parameterString,"Frequency: %d\r\nPhase Current:%lf\r\n",(*m).p->frequency,m->p->current);
+    strcat(retval,parameterString);
+    free(parameterString);
+  }
+
   return retval;
 }
+
+/**
+ *   Calculate the flux/current
+ */
+double inductance(struct motor *m){}
+
+double powerDeliveredToRotor(struct motor *m, double airGap){}
+
 
 int main(int argc,char *argv[]){
 
   struct motor m;
+  m.p=(struct parameters *)malloc(sizeof(struct parameters));
+  (*m.p).current = 69.420;
+  m.p->frequency=120;
   
   if(argc==8){
     m.phases = atoi(argv[1]);
