@@ -2,6 +2,7 @@
  * Induction Motor Modeling
  * To be used for sweeping parameter values and finding optimal
  * design patterns
+ * gcc -lm -std=c99 -o inductionMotor inductionMotor.c
  */
 #include <stdio.h>
 #include <stdlib.h>
