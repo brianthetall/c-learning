@@ -31,6 +31,8 @@ kmap* getKmaps(int inputs){
   char **map;
 
   //printf("sizeof char**=%d, char*=%d\n", sizeof(char**),sizeof(char*));
+
+  ret = (kmap*)malloc(sizeof(kmap));
   
   if (inputs<=1){
     return NULL;
@@ -56,6 +58,7 @@ kmap* getKmaps(int inputs){
 	printf("\t&map[%d][%d]=%d\tmap[%d][%d]=%d\n",i,j,&map[i][j],i,j,map[i][j]);
       printf("\n");
     }
+    
   }
 
   /*
@@ -81,11 +84,15 @@ kmap* getKmaps(int inputs){
   }
   */
 
+  printf("&map[0]=%d\n",&map[0]);
+
+  printf("ret->map=%d\n",ret->map);
+  
   ret->map=map;
   ret->toString = toString;
   (*ret).col=col;
   (*ret).row=row;
-
+  printf("ret->map=%d\n",ret->map);
 
   return ret;
  
