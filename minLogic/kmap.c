@@ -25,23 +25,40 @@ void close(void* k){
 
 kmap* getKmaps(int inputs){
 
+  printf("0: getKmaps()\n");
   int i=0,col,row;
   kmap *ret;
   char **map;
 
+  //printf("sizeof char**=%d, char*=%d\n", sizeof(char**),sizeof(char*));
+  
   if (inputs<=1){
     return NULL;
   }
-  
+
+
   else if (inputs==2 || inputs==4){
+    
     map = (char**)calloc(inputs,sizeof(char*));//the rows
+    //printf("sizeof(map)=%d\tinputs*sizeof(char*)=%d\n",sizeof(map),inputs*sizeof(char*));
+
     row=inputs;
     col=inputs;
+    
     for(i=0;i<inputs;i++){
+      printf("&map[%d]=%d\tmap[%d]=%d\n",i,&map[i],i,map[i]);
+
+      
       map[i]=(char*)calloc(inputs,sizeof(char));//the data
+      printf("&map[%d]=%d\tmap[%d]=%d\n",i,&map[i],i,map[i]);
+
+      for(int j=0;j<inputs;j++)
+	printf("\t&map[%d][%d]=%d\tmap[%d][%d]=%d\n",i,j,&map[i][j],i,j,map[i][j]);
+      printf("\n");
     }
   }
-  
+
+  /*
   else if(inputs==3){
     map = (char**)calloc(2,sizeof(char*));//the rows
     row=2;
@@ -62,6 +79,7 @@ kmap* getKmaps(int inputs){
     }
     
   }
+  */
 
   ret->map=map;
   ret->toString = toString;
@@ -70,5 +88,5 @@ kmap* getKmaps(int inputs){
 
 
   return ret;
-  
+ 
 }
