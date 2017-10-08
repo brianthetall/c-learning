@@ -15,7 +15,7 @@ int main(int argc, char** argv){
 
   printf("Inputs=%d\n",inputs);
 
-  kmap *map = getKmaps(inputs);
+  kmap *map = kmap_build(inputs);//was malloc'ed; pass to free when done
 
   //char* s = map->toString();
   //char* backup=s;
@@ -43,11 +43,10 @@ int main(int argc, char** argv){
   //printf("Map(s):%s\n",(char*)(map->toString()));
   //while(1){printf(".");}
 
-  //map->close(map);
+  map->close(map);
   //free( (kmap*) map);
 
-  //i think that when the main exits, it is freeing the map.
-  //this seems to cause a seg-fault.
+  
   //do i need a destructor inside of kmap?
 
   return 0;

@@ -13,19 +13,27 @@ char* toString(void){
 }
 
 //free the resources inside this object
-void close(void* k){
+void close(kmap* k){
 
-  char a='a';
-  kmap* km = k;
-  char** map = km->map;
+  printf("Returning kmap memory requested with malloc\n");  
+
+  for (int i=0; i < (*k).row ; i++){//each row, had its columns malloc'ed
+    free(k->map[i]);
+    printf("\tFreed row[%d]\n",i);
+  }
   
-  
+  free(k->map);//map was malloc'ed
+  printf("\tFreed map\n");
+
+  free(k);//doesn't this rain on the parade we are in? the memory for close?
+  printf("\tFreed object\n");
+    
+    
   
 }
 
-kmap* getKmaps(int inputs){
+kmap* kmap_build(int inputs){
 
-  printf("0: getKmaps()\n");
   int i=0,col,row;
   kmap *ret;
   char **map;
@@ -33,6 +41,10 @@ kmap* getKmaps(int inputs){
   //printf("sizeof char**=%d, char*=%d\n", sizeof(char**),sizeof(char*));
 
   ret = (kmap*)malloc(sizeof(kmap));
+  ret->close = &close;
+  //no malloc needed; you already have the memory!
+  //ret->close = (void(*)(void*))malloc( sizeof(void(*)(void*)) );
+  
   
   if (inputs<=1){
     return NULL;
@@ -48,11 +60,11 @@ kmap* getKmaps(int inputs){
     col=inputs;
     
     for(i=0;i<inputs;i++){
-      printf("&map[%d]=%d\tmap[%d]=%d\n",i,&map[i],i,map[i]);
+      printf("&map[%d]=%x\tmap[%d]=%d\n",i,&map[i],i,map[i]);
 
       
       map[i]=(char*)calloc(inputs,sizeof(char));//the data
-      printf("&map[%d]=%d\tmap[%d]=%d\n",i,&map[i],i,map[i]);
+      printf("&map[%d]=%x\tmap[%d]=%d\n",i,&map[i],i,map[i]);
 
       for(int j=0;j<inputs;j++)
 	printf("\t&map[%d][%d]=%d\tmap[%d][%d]=%d\n",i,j,&map[i][j],i,j,map[i][j]);
@@ -85,7 +97,6 @@ kmap* getKmaps(int inputs){
   */
 
   printf("&map[0]=%d\n",&map[0]);
-
   printf("ret->map=%d\n",ret->map);
   
   ret->map=map;

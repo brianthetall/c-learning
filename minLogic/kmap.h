@@ -6,5 +6,5 @@ typedef struct{
   void (*close)(void*);//void* is kmap*
 }kmap;
 
-kmap* getKmaps(int);
+kmap* kmap_build(int);
 char* toString(void);
