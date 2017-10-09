@@ -3,9 +3,17 @@
 #include <math.h>
 #include "kmap.h"
 
+char DEBUG=0;
+
 //the return value either to be logged or STDOUT via printf
 char* toString(void){
 
+  /*
+  work here:
+    output a nice looking table
+    you know, get your ASCII art-on
+  */
+  
   char *ret="this is a stub toString()\n";
   printf("toString(): start of string addr=%d, addr_Ptr=%d\n", ret, &ret );
   return ret;
@@ -13,7 +21,7 @@ char* toString(void){
 }
 
 //free the resources inside this object
-void close(kmap* k){
+void kmap_close(kmap* k){
 
   printf("Returning kmap memory requested with malloc\n");  
 
@@ -41,7 +49,8 @@ kmap* kmap_build(int inputs){
   //printf("sizeof char**=%d, char*=%d\n", sizeof(char**),sizeof(char*));
 
   ret = (kmap*)malloc(sizeof(kmap));
-  ret->close = &close;
+  ret->kmap_close = (void(*)(void*))&kmap_close;
+
   //no malloc needed; you already have the memory!
   //ret->close = (void(*)(void*))malloc( sizeof(void(*)(void*)) );
   
@@ -60,11 +69,12 @@ kmap* kmap_build(int inputs){
     col=inputs;
     
     for(i=0;i<inputs;i++){
-      printf("&map[%d]=%x\tmap[%d]=%d\n",i,&map[i],i,map[i]);
-
+      if (DEBUG)
+	printf("&map[%d]=%x\tmap[%d]=%d\n",i,&map[i],i,map[i]);
       
       map[i]=(char*)calloc(inputs,sizeof(char));//the data
-      printf("&map[%d]=%x\tmap[%d]=%d\n",i,&map[i],i,map[i]);
+      if (DEBUG)
+	printf("&map[%d]=%x\tmap[%d]=%d\n",i,&map[i],i,map[i]);
 
       for(int j=0;j<inputs;j++)
 	printf("\t&map[%d][%d]=%d\tmap[%d][%d]=%d\n",i,j,&map[i][j],i,j,map[i][j]);
@@ -96,8 +106,10 @@ kmap* kmap_build(int inputs){
   }
   */
 
-  printf("&map[0]=%d\n",&map[0]);
-  printf("ret->map=%d\n",ret->map);
+  if (DEBUG){
+      printf("&map[0]=%d\n",&map[0]);
+      printf("ret->map=%d\n",ret->map);
+    }
   
   ret->map=map;
   ret->toString = toString;

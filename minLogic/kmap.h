@@ -1,10 +1,11 @@
 
 typedef struct{
-  int col,row;
+  char col,row;
   char **map;
   char* (*toString)(void);
-  void (*close)(void*);//void* is kmap*
+  void (*kmap_close)(void*);//void* is kmap*
 }kmap;
 
+void kmap_close(kmap*);
 kmap* kmap_build(int);
 char* toString(void);

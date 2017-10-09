@@ -1,3 +1,3 @@
 rm a.out
 gcc -lm *.c 
-./a.out 4
+./a.out 2 69,2 1
