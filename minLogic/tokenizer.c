@@ -26,10 +26,10 @@ void free(void* deleteMe){
 
 int list(char** list,char *string,char* delim){
 
-  int count=1,i=0;
-  //char **list;
+  int count=1;
+  int i=0;
+  
   char* newPtr;
-
   char* toke;
   /*get the size of the list*/
   toke=strpbrk(string,delim);
@@ -66,13 +66,17 @@ int list(char** list,char *string,char* delim){
   }
 
 
-  list[i]=(char*)malloc(sizeof(char)*(strlen(string)));
+  printf("working strlen(string)=%d\n",strlen(string));
+  
+  list[i]=(char*)malloc(sizeof(char)*( strlen(string) ) );
+
   printf("&string=%d\tstring=%s\n",string,string);
+  
   memcpy( list[i], string , strlen(string) );
+
   printf("list[%d]=%s\n\n",i,list[i]);
 
-
-  return i++;//return the list size; the list was passed as a pointer
+  return ++i;//return the list size; the list was passed as a pointer
 
 }
 
