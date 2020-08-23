@@ -65,7 +65,27 @@ int main(){
       break;
       
     case 'd':
-      printf("duplicate top element to bottom of stack");
+      printf("duplicate top element to bottom of stack\n");
+      if (sp == 0)
+	printf("No values on stack");
+      else
+	push(val[0]);      
+      break;
+
+    case 's':
+      printf("Swap top two elements\n");
+      if (sp<2)
+	printf("Not enough elements to swap");
+      else{
+	op2=val[0];
+	val[0]=val[1];
+	val[1]=op2;
+      }
+      break;
+
+    case 'c':
+      printf("Clear the stack!\n");
+      sp=0;
       break;
       
     default:
