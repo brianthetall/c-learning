@@ -12,7 +12,7 @@
 
 /* corner of board */
 #define BOARDY	2
-#define BOARDX	0
+#define BOARDX	2
 
 #define CX(x)		(2 + 4 * (x))
 #define CY(y)		(1 + 2 * (y))
@@ -50,7 +50,17 @@ static void dosquares(void)
 {
     int i, j;
 
-    mvaddstr(0, 20, "Wagner Chess");
+    mvaddstr(0, 10, "Wagner Chess");
+    mvaddstr(1,4,"A   B   C   D   E   F   G   H");
+    mvaddstr(19,4,"A   B   C   D   E   F   G   H");
+
+    char c='0';
+    for(i=0;i<=7;i++){
+
+      mvaddch(3+i*2,1,c);
+      mvaddch(3+i*2,35,c++);
+
+    }
 
     move(BOARDY, BOARDX);
     waddch(boardwin, ACS_ULCORNER);
@@ -113,25 +123,26 @@ static void dosquares(void)
 
 void play(){
   dosquares();
-    cellmove(6,6);
-    waddch(boardwin,'\b');
-    waddch(boardwin,'K');
-    wrefresh(boardwin);
-    refresh();
+  
+  cellmove(6,6);
+  waddch(boardwin,'K');
+  cellmove(6,6);
+  waddch(boardwin,'Q');
 
-  while(1){
-      
-    
-  }
+  refresh();
+  wrefresh(boardwin);
+  
+  
+  while(1){}
 }
 
 int main(){
 
   init_program();
-  //  play();
-  dosquares();
-  refresh();
-  wrefresh(boardwin);
-  while(1){}
+  //dosquares();
+  play();
+  //refresh();
+  //wrefresh(boardwin);
+  //  while(1){}
 
 }
