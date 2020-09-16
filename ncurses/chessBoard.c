@@ -25,22 +25,21 @@ typedef struct {
 } cell;
 
 static WINDOW *boardwin;	/* the board window */
-static WINDOW *msgwin;
+static WINDOW *movewin;
 
 static void init_program(void)
 {
 
     initscr();
     cbreak();                   /* immediate char return */
-    noecho();                   /* no immediate echo */
+    //noecho();                   /* no immediate echo */
     boardwin = newwin(BDEPTH * 2 + 1, BWIDTH * 4 + 1, BOARDY, BOARDX);
-    msgwin = newwin(1, INSTRX - 1, NOTIFYY, 0);
-    scrollok(msgwin, TRUE);
-    keypad(boardwin, TRUE);
+    movewin = newwin(1, INSTRX - 1, NOTIFYY, 0);
+    scrollok(movewin, TRUE);
+    keypad(movewin, TRUE);
 
     if (has_colors()) {
         int bg = COLOR_BLACK;
-
         start_color();
     }
     
@@ -50,7 +49,7 @@ static void dosquares(void)
 {
     int i, j;
 
-    mvaddstr(0, 10, "Wagner Chess");
+    mvaddstr(0, 13, "Wagner Chess");
     mvaddstr(1,4,"A   B   C   D   E   F   G   H");
     mvaddstr(19,4,"A   B   C   D   E   F   G   H");
 
@@ -129,8 +128,11 @@ void play(){
   cellmove(6,6);
   waddch(boardwin,'Q');
 
+  mvwaddstr(movewin,0,0,"Enter Move: ");
+
   refresh();
   wrefresh(boardwin);
+  wrefresh(movewin);
   
   
   while(1){}
